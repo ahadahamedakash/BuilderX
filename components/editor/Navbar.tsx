@@ -1,6 +1,14 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { Save, FolderOpen, Smartphone, Tablet, Monitor } from "lucide-react";
+
+import { useBuilderStore } from "@/lib/store";
+import { logoutAction } from "@/lib/actions/auth";
+
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,10 +16,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Save, FolderOpen, Smartphone, Tablet, Monitor } from 'lucide-react';
-import { useBuilderStore } from '@/lib/store';
-import { useState, useEffect } from 'react';
+} from "@/components/ui/dropdown-menu";
 
 interface ViewportSize {
   name: string;
@@ -20,9 +25,9 @@ interface ViewportSize {
 }
 
 const viewportSizes: ViewportSize[] = [
-  { name: 'Mobile', width: '375px', icon: <Smartphone className="h-4 w-4" /> },
-  { name: 'Tablet', width: '768px', icon: <Tablet className="h-4 w-4" /> },
-  { name: 'Desktop', width: '100%', icon: <Monitor className="h-4 w-4" /> },
+  { name: "Mobile", width: "375px", icon: <Smartphone className="h-4 w-4" /> },
+  { name: "Tablet", width: "768px", icon: <Tablet className="h-4 w-4" /> },
+  { name: "Desktop", width: "100%", icon: <Monitor className="h-4 w-4" /> },
 ];
 
 interface NavbarProps {
@@ -34,16 +39,18 @@ export function Navbar({ onViewportChange, currentViewport }: NavbarProps) {
   const { components, setComponents } = useBuilderStore();
   const [projectNames, setProjectNames] = useState<string[]>([]);
 
+  const router = useRouter();
+
   // Load project names from localStorage
   useEffect(() => {
     const savedProjects = Object.keys(localStorage)
-      .filter((key) => key.startsWith('builder-project-'))
-      .map((key) => key.replace('builder-project-', ''));
+      .filter((key) => key.startsWith("builder-project-"))
+      .map((key) => key.replace("builder-project-", ""));
     setProjectNames(savedProjects);
   }, []);
 
   const handleSave = () => {
-    const projectName = prompt('Enter project name:');
+    const projectName = prompt("Enter project name:");
     if (!projectName) return;
 
     const template = {
@@ -53,19 +60,19 @@ export function Navbar({ onViewportChange, currentViewport }: NavbarProps) {
         props: comp.props,
         order: comp.order,
       })),
-      version: '1.0',
+      version: "1.0",
       savedAt: new Date().toISOString(),
       projectName,
     };
 
     const json = JSON.stringify(template, null, 2);
-    
+
     // Save to localStorage with project name
     localStorage.setItem(`builder-project-${projectName}`, json);
-    
+
     // Also save latest
-    localStorage.setItem('builder-template', json);
-    
+    localStorage.setItem("builder-template", json);
+
     // Update project list
     setProjectNames((prev) => {
       if (!prev.includes(projectName)) {
@@ -81,7 +88,7 @@ export function Navbar({ onViewportChange, currentViewport }: NavbarProps) {
   const handleLoadProject = (projectName: string) => {
     const savedData = localStorage.getItem(`builder-project-${projectName}`);
     if (!savedData) {
-      alert('Project not found!');
+      alert("Project not found!");
       return;
     }
 
@@ -96,7 +103,7 @@ export function Navbar({ onViewportChange, currentViewport }: NavbarProps) {
         alert(`Project "${projectName}" loaded successfully!`);
       }
     } catch (error) {
-      alert('Error loading project. Invalid JSON format.');
+      alert("Error loading project. Invalid JSON format.");
       console.error(error);
     }
   };
@@ -109,14 +116,19 @@ export function Navbar({ onViewportChange, currentViewport }: NavbarProps) {
     }
   };
 
+  async function handleLogout() {
+    await logoutAction();
+    toast.success("Logged out successfully!");
+
+    router.push("/login");
+    router.refresh();
+  }
+
   return (
     <nav className="h-16 bg-white border-b flex items-center justify-between px-6">
       <div className="flex items-center gap-2">
         <h1 className="text-xl font-bold">BuilderX</h1>
-        {/* <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-          MVP
-        </span> */}
-        
+
         {/* Project Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -151,14 +163,14 @@ export function Navbar({ onViewportChange, currentViewport }: NavbarProps) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      
+
       <div className="flex items-center gap-2">
         {/* Responsive View Buttons */}
         <div className="flex items-center gap-1 border rounded-md p-1">
           {viewportSizes.map((size) => (
             <Button
               key={size.name}
-              variant={currentViewport === size.width ? 'default' : 'ghost'}
+              variant={currentViewport === size.width ? "default" : "ghost"}
               size="sm"
               onClick={() => onViewportChange(size.width)}
               className="flex items-center gap-1"
@@ -178,6 +190,15 @@ export function Navbar({ onViewportChange, currentViewport }: NavbarProps) {
         >
           <Save className="h-4 w-4" />
           Save Template
+        </Button>
+
+        <Button
+          onClick={handleLogout}
+          variant="destructive"
+          size="sm"
+          className="flex items-center gap-2"
+        >
+          Logout
         </Button>
       </div>
     </nav>
