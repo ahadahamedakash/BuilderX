@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## BuilderX
 
-## Getting Started
+Drag-and-drop template builder with auth, MongoDB persistence, and global theming.
 
-First, run the development server:
-
+### Setup
+1. First clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/ahadahamedakash/BuilderX.git
+```
+2. Install dependencies:
+```bash
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Create `.env` in the project root:
+```bash
+MONGODB_URI=your_mongodb_connection_string
+JWT_SECRET=your_long_random_secret
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+4. Run in dev:
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Auth
+- Email/password signup/login using server actions. A JWT is stored as an httpOnly cookie.
 
-## Learn More
+### Templates (MongoDB via Mongoose)
+- Create, update, list, get, delete templates in `lib/actions/templates.ts`.
+- Selected template id is reflected in the URL as `?template=<id>`.
 
-To learn more about Next.js, take a look at the following resources:
+### Editor
+- Left: Component palette (drag onto canvas).
+- Center: Canvas (sortable; drag to reorder; responsive).
+- Right: Property panel plus Global Colors (always visible).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Global Colors
+- Primary, Secondary, Tertiary, Text Primary, Text Secondary live in `useBuilderStore().theme`.
+- All components render using these colors (component color pickers removed).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Viewport Preview (Desktop only)
+- Buttons in top navbar let you preview Mobile (375px), Tablet (768px), Desktop (100%).
+- Hidden on tablet/mobile devices; the canvas remains responsive.
 
-## Deploy on Vercel
+### Common Tasks
+- Save/Update: Persist the current canvas to your account.
+- Projects dropdown: Load any template; URL updates with its id.
+- Delete: Remove the current template from your account.
+- New Project: Clears canvas and resets current template.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Environment Notes
+- Ensure `MONGODB_URI` is reachable from your environment.
+- Keep `JWT_SECRET` long and secret (e.g., 32+ random bytes).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Tech Stack
+- Next.js (App Router), TypeScript
+- Zustand (state)
+- dnd-kit (drag and drop)
+- Mongoose (MongoDB)
+- Tailwind + shadcn/ui (UI)

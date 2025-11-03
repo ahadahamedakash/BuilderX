@@ -1,16 +1,15 @@
 "use client";
 
+import { cn } from "@/lib/utils";
+import { CSS } from "@dnd-kit/utilities";
 import { useDroppable } from "@dnd-kit/core";
 import {
-  SortableContext,
   useSortable,
+  SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import { useBuilderStore } from "@/lib/store";
 import { getComponentDefinition } from "@/lib/component-library";
-import { cn } from "@/lib/utils";
-import React from "react";
 
 interface SortableComponentProps {
   id: string;
@@ -57,12 +56,12 @@ function SortableComponent({ id, component }: SortableComponentProps) {
         isDragging && "opacity-50",
         selectedComponentId === id && "ring-2 ring-blue-500 ring-offset-2"
       )}
+      {...attributes}
+      {...listeners}
       onClick={handleClick}
     >
       {/* Drag handle - only for dragging */}
       <div
-        {...attributes}
-        {...listeners}
         className="absolute top-2 left-2 z-10 w-6 h-6 bg-blue-500 rounded cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
         onClick={(e) => e.stopPropagation()}
       >
@@ -164,19 +163,35 @@ function applyTheme(
       base.bgColor = theme.secondary;
       base.textColor = theme.textPrimary;
       base.buttonColor = theme.primary;
-      base.buttonTextColor = "#ffffff";
+      base.buttonTextColor = theme.textSecondary;
       return base;
     case "banner":
       base.bgColor = theme.primary;
-      base.textColor = "#ffffff";
+      base.textColor = theme.textSecondary;
       return base;
     case "cards":
-      base.bgColor = theme.tertiary + "5";
+      base.bgColor = theme.tertiary + "10";
       base.titleColor = theme.textPrimary;
       return base;
-    case "footer":
+    case "navbar2":
       base.bgColor = theme.primary;
-      base.textColor = "#ffffff";
+      base.textColor = theme.textSecondary;
+      base.logoColor = theme.textPrimary;
+      return base;
+    case "bannerImage":
+      base.textColor = theme.primary;
+      return base;
+      case "footer":
+      base.bgColor = theme.primary;
+      base.textColor = theme.textSecondary;
+      return base;
+    case "footer2":
+      base.bgColor = theme.primary;
+      base.textColor = theme.textSecondary;
+      return base;
+    case "testimonials":
+      base.bgColor = theme.secondary + "10";
+      base.titleColor = theme.textPrimary;
       return base;
     default:
       return base;

@@ -3,7 +3,15 @@
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { Save, FolderOpen, Trash, PlusCircle } from "lucide-react";
+import {
+  Save,
+  FolderOpen,
+  Trash,
+  PlusCircle,
+  Phone,
+  Tablet,
+  Monitor,
+} from "lucide-react";
 
 import { useBuilderStore } from "@/lib/store";
 import { logoutAction } from "@/lib/actions/auth";
@@ -24,9 +32,12 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 
-type NavbarProps = object;
+type NavbarProps = {
+  onViewportChange?: (width: string) => void;
+  currentViewport?: string;
+};
 
-export function Navbar({}: NavbarProps) {
+export function Navbar({ onViewportChange, currentViewport }: NavbarProps) {
   const {
     components,
     setComponents,
@@ -108,11 +119,11 @@ export function Navbar({}: NavbarProps) {
     }
 
     const t = res.template;
-    
+
     const list = Array.isArray((t.data as any)?.components)
       ? (t.data as any).components
       : [];
-      
+
     const sortedComponents = [...list].sort(
       (a: any, b: any) => (a.order || 0) - (b.order || 0)
     );
@@ -166,6 +177,25 @@ export function Navbar({}: NavbarProps) {
       </div>
 
       <div className="flex items-center gap-2">
+        {/* Desktop-only viewport controls */}
+        <div className="hidden lg:flex items-center gap-1 border rounded-md p-1">
+          {[
+            { name: "Phone", icon: Phone, width: "375px" },
+            { name: "Tablet", icon: Tablet, width: "768px" },
+            { name: "Monitor", icon: Monitor, width: "100%" },
+          ].map((size, index) => (
+            <Button
+              key={index + 1}
+              variant={currentViewport === size.width ? "default" : "ghost"}
+              size="sm"
+              onClick={() => onViewportChange && onViewportChange(size.width)}
+              className="flex items-center gap-1"
+              title={size.name}
+            >
+              <size.icon className="hidden xl:inline" />
+            </Button>
+          ))}
+        </div>
         {currentTemplateId && (
           <div className="flex items-center gap-2 mr-2">
             <span
