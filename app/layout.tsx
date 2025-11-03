@@ -16,7 +16,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "BuilderX",
-  description: "",
+  description:
+    "BuilderX lets you build and preview website designs without writing a single line of code. Just drag, drop, and customize real UI components in an intuitive visual editor. Change layouts, tweak styles, adjust responsiveness, and instantly see how your site looks on mobile, tablet, and desktop.",
 };
 
 export default function RootLayout({
@@ -25,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

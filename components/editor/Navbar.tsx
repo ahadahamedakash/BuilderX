@@ -73,51 +73,64 @@ export function Navbar({}: NavbarProps) {
         );
         return;
       }
+
       setCurrentTemplate(res.template!._id, res.template!.name);
+
       router.push(`/?template=${res.template!._id}`);
+
       toast.success("Template saved.");
+
       const list = await listTemplatesAction();
+
       if (list.success && list.templates) setTemplates(list.templates);
     } else {
       const res = await updateTemplateAction(currentTemplateId, payload as any);
+
       if (!res.success) {
         toast.error("Failed to update template.");
         return;
       }
+
       toast.success("Template updated.");
+
       const list = await listTemplatesAction();
+
       if (list.success && list.templates) setTemplates(list.templates);
     }
   };
 
   const handleLoadProject = async (templateId: string) => {
     const res = await getTemplateAction(templateId);
+
     if (!res.success || !res.template) {
       toast.error("Failed to load project.");
       return;
     }
+
     const t = res.template;
+    
     const list = Array.isArray((t.data as any)?.components)
       ? (t.data as any).components
       : [];
+      
     const sortedComponents = [...list].sort(
       (a: any, b: any) => (a.order || 0) - (b.order || 0)
     );
+
     setComponents(sortedComponents);
     setCurrentTemplate(t._id, t.name);
     router.push(`/?template=${t._id}`);
     toast.success(`Loaded \"${t.name}\"`);
   };
 
-  // Deleting templates is not required per spec; keeping placeholder removed.
-
-  async function handleLogout() {
+  // LOGOUT HANDLER
+  const handleLogout = async () => {
     await logoutAction();
     toast.success("Logged out successfully!");
 
     router.push("/login");
     router.refresh();
-  }
+  };
 
   return (
     <nav className="h-16 bg-white border-b flex items-center justify-between px-6">

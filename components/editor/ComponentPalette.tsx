@@ -51,7 +51,7 @@ function DraggableComponentItem({ component }: DraggableComponentItemProps) {
       >
         <div
           style={{
-            transform: "scale(0.9)",
+            transform: "scale(1)",
             transformOrigin: "top left",
             width: "100%",
           }}

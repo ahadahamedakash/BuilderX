@@ -171,7 +171,7 @@ function applyTheme(
       base.textColor = "#ffffff";
       return base;
     case "cards":
-      base.bgColor = theme.tertiary + "20";
+      base.bgColor = theme.tertiary + "5";
       base.titleColor = theme.textPrimary;
       return base;
     case "footer":
