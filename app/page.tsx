@@ -30,6 +30,7 @@ export default function Home() {
   const [leftSheetOpen, setLeftSheetOpen] = useState(false);
   const [rightSheetOpen, setRightSheetOpen] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
+  // Always responsive; no manual viewport controls
 
   const {
     components,
@@ -133,13 +134,13 @@ export default function Home() {
 
           {/* Mobile Left Sheet */}
           <Sheet open={leftSheetOpen} onOpenChange={setLeftSheetOpen}>
-            <SheetContent side="left" className="w-64 p-0">
+            <SheetContent side="left" className="w-64 p-0 z-50">
               <ComponentPalette />
             </SheetContent>
           </Sheet>
 
           {/* Main Canvas Area */}
-          <main className="flex-1 flex flex-col overflow-hidden relative">
+          <main className="flex-1 flex flex-col overflow-hidden relative z-0">
             {/* Mobile Control Buttons */}
             <div className="md:hidden flex gap-2 p-2 bg-white border-b z-10">
               <Sheet open={leftSheetOpen} onOpenChange={setLeftSheetOpen}>
@@ -160,11 +161,7 @@ export default function Home() {
               </Sheet>
             </div>
 
-            <Canvas
-              className="flex-1"
-              activeId={activeId}
-              activeComponent={activeComponent}
-            />
+            <Canvas className="flex-1" />
           </main>
 
           {/* Desktop Right Sidebar */}

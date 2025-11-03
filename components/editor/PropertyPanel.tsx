@@ -12,19 +12,51 @@ export function PropertyPanel() {
     updateComponent,
     deleteComponent,
     setSelectedComponentId,
+    theme,
+    setTheme,
   } = useBuilderStore();
 
   const selectedComponent = components.find(
     (c) => c.id === selectedComponentId
   );
 
+  const ThemeControls = (
+    <div className="mt-6 p-3 bg-white border rounded-lg space-y-3">
+      <h3 className="text-sm font-semibold">Global Colors</h3>
+      {([
+        { key: 'primary', label: 'Primary' },
+        { key: 'secondary', label: 'Secondary' },
+        { key: 'tertiary', label: 'Tertiary' },
+        { key: 'textPrimary', label: 'Text Primary' },
+        { key: 'textSecondary', label: 'Text Secondary' },
+      ] as const).map((c) => (
+        <div key={c.key}>
+          <label className="text-xs font-medium text-gray-600 mb-1 block">{c.label}</label>
+          <div className="flex gap-2">
+            <input
+              type="color"
+              value={(theme as any)[c.key]}
+              onChange={(e) => setTheme({ [c.key]: e.target.value } as any)}
+              className="h-10 w-20 border rounded cursor-pointer"
+            />
+            <input
+              type="text"
+              value={(theme as any)[c.key]}
+              onChange={(e) => setTheme({ [c.key]: e.target.value } as any)}
+              className="flex-1 p-2 border rounded bg-white text-sm"
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
   if (!selectedComponent) {
     return (
-      <div className="h-full bg-gray-50 border-l p-4">
+      <div className="h-full bg-gray-50 border-l p-4 overflow-y-auto">
         <h2 className="text-lg font-semibold mb-4">Properties</h2>
-        <div className="text-center text-gray-400 mt-8">
-          <p>Select a component to edit its properties</p>
-        </div>
+        <p className="text-sm text-gray-500">No component selected.</p>
+        {ThemeControls}
       </div>
     );
   }
@@ -247,6 +279,7 @@ export function PropertyPanel() {
             )}
           </div>
         ))}
+        {ThemeControls}
       </div>
     </div>
   );

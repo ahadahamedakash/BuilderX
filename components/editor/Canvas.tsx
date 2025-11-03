@@ -1,18 +1,16 @@
-'use client';
+"use client";
 
-import {
-  useDroppable,
-} from '@dnd-kit/core';
+import { useDroppable } from "@dnd-kit/core";
 import {
   SortableContext,
   useSortable,
   verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { useBuilderStore } from '@/lib/store';
-import { getComponentDefinition } from '@/lib/component-library';
-import { cn } from '@/lib/utils';
-import React from 'react';
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { useBuilderStore } from "@/lib/store";
+import { getComponentDefinition } from "@/lib/component-library";
+import { cn } from "@/lib/utils";
+import React from "react";
 
 interface SortableComponentProps {
   id: string;
@@ -24,7 +22,8 @@ interface SortableComponentProps {
 }
 
 function SortableComponent({ id, component }: SortableComponentProps) {
-  const { selectedComponentId, setSelectedComponentId } = useBuilderStore();
+  const { selectedComponentId, setSelectedComponentId, theme } =
+    useBuilderStore();
   const definition = getComponentDefinition(component.type);
 
   const {
@@ -54,9 +53,9 @@ function SortableComponent({ id, component }: SortableComponentProps) {
       ref={setNodeRef}
       style={style}
       className={cn(
-        'relative rounded-lg group',
-        isDragging && 'opacity-50',
-        selectedComponentId === id && 'ring-2 ring-blue-500 ring-offset-2'
+        "relative rounded-lg group",
+        isDragging && "opacity-50",
+        selectedComponentId === id && "ring-2 ring-blue-500 ring-offset-2"
       )}
       onClick={handleClick}
     >
@@ -69,9 +68,9 @@ function SortableComponent({ id, component }: SortableComponentProps) {
       >
         <div className="w-2 h-2 bg-white rounded-full"></div>
       </div>
-      
+
       <div className="bg-white rounded border-2 border-dashed border-transparent group-hover:border-gray-300">
-        {definition.render(component.props)}
+        {definition.render(applyTheme(component.type, component.props, theme))}
       </div>
       {selectedComponentId === id && (
         <div className="absolute top-0 right-0 bg-blue-500 text-white text-xs px-2 py-1 rounded-bl">
@@ -86,20 +85,19 @@ interface CanvasProps {
   className?: string;
   activeId?: string | null;
   activeComponent?: any;
-  viewportWidth?: string;
 }
 
 function DroppableCanvas({ children }: { children: React.ReactNode }) {
   const { setNodeRef, isOver } = useDroppable({
-    id: 'canvas-drop-zone',
+    id: "canvas-drop-zone",
   });
 
   return (
     <div
       ref={setNodeRef}
       className={cn(
-        'h-full bg-gray-100 overflow-y-auto',
-        isOver && 'bg-blue-50'
+        "h-full bg-gray-100 overflow-y-auto",
+        isOver && "bg-blue-50"
       )}
     >
       {children}
@@ -107,21 +105,14 @@ function DroppableCanvas({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function Canvas({ className, activeId, activeComponent, viewportWidth = '100%' }: CanvasProps) {
-  const {
-    components,
-    setSelectedComponentId,
-  } = useBuilderStore();
+export function Canvas({ className }: CanvasProps) {
+  const { components, setSelectedComponentId } = useBuilderStore();
 
   return (
     <DroppableCanvas>
-      <div 
-        className={cn('min-h-full mx-auto', className)} 
+      <div
+        className={cn("min-h-full mx-auto w-full max-w-full", className)}
         onClick={() => setSelectedComponentId(null)}
-        style={{
-          width: viewportWidth,
-          maxWidth: viewportWidth,
-        }}
       >
         <SortableContext
           items={components.map((c) => c.id)}
@@ -149,4 +140,45 @@ export function Canvas({ className, activeId, activeComponent, viewportWidth = '
       </div>
     </DroppableCanvas>
   );
+}
+
+function applyTheme(
+  type: string,
+  props: Record<string, any>,
+  theme: {
+    primary: string;
+    secondary: string;
+    tertiary: string;
+    textPrimary: string;
+    textSecondary: string;
+  }
+) {
+  const base = { ...props };
+  switch (type) {
+    case "navbar":
+      base.bgColor = theme.primary;
+      base.textColor = theme.textSecondary;
+      base.logoColor = theme.textPrimary;
+      return base;
+    case "hero":
+      base.bgColor = theme.secondary;
+      base.textColor = theme.textPrimary;
+      base.buttonColor = theme.primary;
+      base.buttonTextColor = "#ffffff";
+      return base;
+    case "banner":
+      base.bgColor = theme.primary;
+      base.textColor = "#ffffff";
+      return base;
+    case "cards":
+      base.bgColor = theme.tertiary + "20";
+      base.titleColor = theme.textPrimary;
+      return base;
+    case "footer":
+      base.bgColor = theme.primary;
+      base.textColor = "#ffffff";
+      return base;
+    default:
+      return base;
+  }
 }

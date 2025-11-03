@@ -1,20 +1,21 @@
-'use client';
+"use client";
 
-import { useDraggable } from '@dnd-kit/core';
-import { componentLibrary } from '@/lib/component-library';
+import { useDraggable } from "@dnd-kit/core";
+import { componentLibrary } from "@/lib/component-library";
 
 interface DraggableComponentItemProps {
-  component: typeof componentLibrary[0];
+  component: (typeof componentLibrary)[0];
 }
 
 function DraggableComponentItem({ component }: DraggableComponentItemProps) {
-  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
-    id: `palette-${component.type}`,
-    data: {
-      type: 'palette-item',
-      componentType: component.type,
-    },
-  });
+  const { attributes, listeners, setNodeRef, transform, isDragging } =
+    useDraggable({
+      id: `palette-${component.type}`,
+      data: {
+        type: "palette-item",
+        componentType: component.type,
+      },
+    });
 
   const style = transform
     ? {
@@ -31,7 +32,7 @@ function DraggableComponentItem({ component }: DraggableComponentItemProps) {
       className={`
         border rounded-lg cursor-grab active:cursor-grabbing
         bg-white hover:bg-gray-50 transition-colors overflow-hidden
-        ${isDragging ? 'opacity-50' : ''}
+        ${isDragging ? "opacity-50" : ""}
       `}
     >
       <div className="p-3 border-b bg-gray-50">
@@ -40,16 +41,21 @@ function DraggableComponentItem({ component }: DraggableComponentItemProps) {
           <span className="font-medium text-sm">{component.label}</span>
         </div>
       </div>
-      <div 
-        className="p-3 bg-white" 
-        style={{ 
-          minHeight: '150px',
-          maxHeight: '200px',
-          overflow: 'auto',
-          width: '100%'
+      <div
+        className="p-3 bg-white overflow-hidden"
+        style={{
+          minHeight: "150px",
+          maxHeight: "100%",
+          width: "100%",
         }}
       >
-        <div style={{ transform: 'scale(0.8)', transformOrigin: 'top left', width: '125%' }}>
+        <div
+          style={{
+            transform: "scale(0.9)",
+            transformOrigin: "top left",
+            width: "100%",
+          }}
+        >
           {component.render(component.defaultProps)}
         </div>
       </div>
@@ -59,7 +65,7 @@ function DraggableComponentItem({ component }: DraggableComponentItemProps) {
 
 export function ComponentPalette() {
   return (
-    <div className="h-full bg-gray-50 border-r p-4 overflow-y-auto">
+    <div className="h-full bg-gray-50 border-r p-4 overflow-y-auto overflow-x-hidden">
       <h2 className="text-lg font-semibold mb-4">Components</h2>
       <div className="space-y-3">
         {componentLibrary.map((component) => (

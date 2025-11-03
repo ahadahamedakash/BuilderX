@@ -8,8 +8,6 @@ import User from "@/models/User";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-console.log("JWT_SECRET: ", JWT_SECRET);
-
 if (!JWT_SECRET) {
   throw new Error(
     "Please define the JWTSECRET environment variable inside .env.local"
@@ -177,35 +175,20 @@ export async function loginAction(formData: FormData): Promise<LoginResult> {
   }
 }
 
-// export async function getCurrentUser() {
-//   const cookieStore = await cookies();
-  
-//   const token = cookieStore.get("token")?.value;
-
-//   if (!token) return null;
-
-//   try {
-//     const decoded = jwt.verify(token, JWT_SECRET!) as { userId: string };
-
-//     await connectDB();
-//     const user = await User.findById(decoded.userId).select("-password");
-
-//     return user ? 
-//       { id: user._id.toString(), name: user.name, email: user.email } 
-//       : null;
-//   } catch {
-//     return null;
-//   }
-// }
-
 export async function getCurrentUser() {
-  const token = cookies().get("token")?.value;
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token")?.value;
   if (!token) return null;
 
   try {
-    const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
+    const decoded = jwt.verify(token, JWT_SECRET as string) as {
+      userId: string;
+      email?: string;
+    };
+
     await connectDB();
-    return await User.findById(decoded.userId).select("-password");
+    const user = await User.findById(decoded.userId).select("-password");
+    return user;
   } catch {
     return null;
   }
@@ -215,7 +198,7 @@ export async function logoutAction() {
   const cookieStore = await cookies();
   cookieStore.set("token", "", {
     httpOnly: true,
-    expires: new Date(0)
+    expires: new Date(0),
   });
 
   return { success: true };
