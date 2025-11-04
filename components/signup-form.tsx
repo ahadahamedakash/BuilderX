@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { signupAction } from "@/lib/actions/auth";
 
 import { Input } from "@/components/ui/input";
@@ -16,6 +16,7 @@ import {
   FieldLabel,
   FieldDescription,
 } from "@/components/ui/field";
+import { toast } from "sonner";
 
 export function SignupForm({
   className,
@@ -26,14 +27,16 @@ export function SignupForm({
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleSubmit(formData: FormData) {
+    toast.info("Please wait a moment!");
+
     setIsLoading(true);
     setError("");
 
     const result = await signupAction(formData);
 
-    console.log("SIGN UP RES: ", result)
-
     if (result.success) {
+      toast.success("Signup successfully!");
+
       router.push("/");
       router.refresh();
     } else {

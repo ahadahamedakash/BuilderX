@@ -16,6 +16,7 @@ import {
   FieldLabel,
   FieldDescription,
 } from "@/components/ui/field";
+import { toast } from "sonner";
 
 export function LoginForm({
   className,
@@ -26,12 +27,16 @@ export function LoginForm({
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleSubmit(formData: FormData) {
+    toast.info("Please wait a moment!");
+
     setIsLoading(true);
     setError("");
 
     const result = await loginAction(formData);
 
     if (result.success) {
+      toast.success("Signed up successfully.");
+
       router.push("/");
       router.refresh();
     } else {

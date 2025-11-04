@@ -5,12 +5,12 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import {
   Save,
-  FolderOpen,
   Trash,
-  PlusCircle,
   Phone,
   Tablet,
   Monitor,
+  FolderOpen,
+  PlusCircle,
 } from "lucide-react";
 
 import { useBuilderStore } from "@/lib/store";
@@ -61,6 +61,8 @@ export function Navbar({ onViewportChange, currentViewport }: NavbarProps) {
   }, []);
 
   const handleSave = async () => {
+    toast.info("Please wait a moment!");
+
     const payload = {
       components: components.map((comp) => ({
         id: comp.id,

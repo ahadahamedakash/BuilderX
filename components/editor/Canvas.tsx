@@ -68,7 +68,14 @@ function SortableComponent({ id, component }: SortableComponentProps) {
         <div className="w-2 h-2 bg-white rounded-full"></div>
       </div>
 
-      <div className="bg-white rounded border-2 border-dashed border-transparent group-hover:border-gray-300">
+      <div
+        className={cn(
+          "rounded border-2 border-dashed border-transparent group-hover:border-gray-300",
+          component.type === "navbar" || component.type === "navbar2"
+            ? "mb-0"
+            : "mb-16"
+        )}
+      >
         {definition.render(applyTheme(component.type, component.props, theme))}
       </div>
       {selectedComponentId === id && (
@@ -170,7 +177,6 @@ function applyTheme(
       base.textColor = theme.textSecondary;
       return base;
     case "cards":
-      base.bgColor = theme.tertiary + "10";
       base.titleColor = theme.textPrimary;
       return base;
     case "navbar2":
@@ -181,7 +187,7 @@ function applyTheme(
     case "bannerImage":
       base.textColor = theme.primary;
       return base;
-      case "footer":
+    case "footer":
       base.bgColor = theme.primary;
       base.textColor = theme.textSecondary;
       return base;
