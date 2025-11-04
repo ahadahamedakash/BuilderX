@@ -6,11 +6,11 @@ import { useState, useEffect } from "react";
 import {
   Save,
   Trash,
-  Phone,
   Tablet,
   Monitor,
   FolderOpen,
   PlusCircle,
+  Smartphone,
 } from "lucide-react";
 
 import { useBuilderStore } from "@/lib/store";
@@ -182,7 +182,7 @@ export function Navbar({ onViewportChange, currentViewport }: NavbarProps) {
         {/* Desktop-only viewport controls */}
         <div className="hidden lg:flex items-center gap-1 border rounded-md p-1">
           {[
-            { name: "Phone", icon: Phone, width: "375px" },
+            { name: "Phone", icon: Smartphone, width: "375px" },
             { name: "Tablet", icon: Tablet, width: "768px" },
             { name: "Monitor", icon: Monitor, width: "100%" },
           ].map((size, index) => (

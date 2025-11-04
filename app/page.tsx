@@ -126,7 +126,10 @@ export default function Home() {
       onDragEnd={handleDragEnd}
     >
       <div className="h-screen flex flex-col">
-        <Navbar onViewportChange={(w) => setViewportWidth(w)} currentViewport={viewportWidth} />
+        <Navbar
+          onViewportChange={(w) => setViewportWidth(w)}
+          currentViewport={viewportWidth}
+        />
         <div className="flex-1 flex overflow-hidden">
           {/* Desktop Left Sidebar */}
           <aside className="hidden md:block w-96 shrink-0">
@@ -162,9 +165,12 @@ export default function Home() {
               </Sheet>
             </div>
 
-            <div className="w-full flex justify-center px-2 md:px-6">
-              <div className="w-full" style={{ maxWidth: viewportWidth }}>
-                <Canvas className="flex-1" />
+            <div className="flex-1 flex justify-center px-2 md:px-6 overflow-hidden">
+              <div
+                className="w-full h-full"
+                style={{ maxWidth: viewportWidth }}
+              >
+                <Canvas className="h-full" />
               </div>
             </div>
           </main>
